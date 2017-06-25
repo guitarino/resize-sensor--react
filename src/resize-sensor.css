@@ -1,0 +1,61 @@
+.resize-sensor-react,
+.resize-sensor-react > div,
+.resize-sensor-react .resize-sensor-react__contract-child {
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+.resize-sensor-react {
+  background: #eee;
+  overflow: auto;
+  direction: ltr;
+}
+.resize-sensor-react .resize-sensor-react__contract-child {
+  width: 200%;
+  height: 200%;
+}
+@keyframes resize-sensor-react-animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@-webkit-keyframes resize-sensor-react-animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@-moz-keyframes resize-sensor-react-animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@-o-keyframes resize-sensor-react-animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
+}
+/* This is needed to trigger resizing
+   once the element becomes visible */
+.resize-sensor-react {
+  animation-name: resize-sensor-react-animation;
+  animation-duration: 1ms;
+}

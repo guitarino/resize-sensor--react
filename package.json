@@ -1,0 +1,36 @@
+{
+  "name": "resize-sensor--react",
+  "version": "0.1.0",
+  "description": "Resize Sensor for React",
+  "main": "./build/resize-sensor.js",
+  "scripts": {
+    "install-global-deps": "npm install -g http-server && npm install -g webpack",
+    "demo-server": "http-server ./demo/ -c 0",
+    "demo-webpack": "webpack",
+    "build": "./node_modules/.bin/babel.cmd ./src/resize-sensor.jsx --out-file ./build/resize-sensor.js"
+  },
+  "keywords": [
+    "resize",
+    "sensor",
+    "react"
+  ],
+  "author": "Kirill Shestakov",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-transform-css-import-to-string": "0.0.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.4",
+    "path": "^0.12.7",
+    "raw-loader": "^0.5.1",
+    "style-loader": "^0.18.2",
+    "webpack": "^2.6.1"
+  },
+  "dependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  }
+}
