@@ -3,6 +3,8 @@ import style from './resize-sensor.css';
 import './raf';
 
 var
+  // this is for ie9
+  supportsAttachEvent = ('attachEvent' in document),
   // needed so that we just insert <style> once
   styleInitialized = false,
   // animation start events with varied prefixes
@@ -75,7 +77,7 @@ export default class ResizeSensor extends React.Component {
   // initially, when no element is mounted yet,
   // insert style into DOM
   componentWillMount() {
-    if(!styleInitialized) {
+    if (!styleInitialized) {
       styleInitialized = true;
       insertCSS(style);
     }
@@ -101,20 +103,34 @@ export default class ResizeSensor extends React.Component {
   //       so that we don't have to deal with binding
   componentDidMount() {
     this.setOnResize(this.props);
-    this.self.addEventListener('scroll', this, true);
-    for(var i=0; i<animStart.length; i++) {
-      this.self.addEventListener(animStart[i], this);
+    // ie9 only
+    if (supportsAttachEvent) {
+      this.self.attachEvent('onresize', this.onElementResize);
     }
-    // Initial value reset of all triggers
-    this.resetTriggers();
+    // other browsers
+    else {
+      this.self.addEventListener('scroll', this, true);
+      for (var i=0; i<animStart.length; i++) {
+        this.self.addEventListener(animStart[i], this);
+      }
+      // Initial value reset of all triggers
+      this.resetTriggers();
+    }
   }
 
   // When element is unmounted, need to remove all
   componentWillUnmount() {
-    for(var i=0; i<animStart.length; i++) {
-      this.self.removeEventListener(animStart[i], this);
+    // ie9 only
+    if (supportsAttachEvent) {
+      this.self.detachEvent('onresize', this.onElementResize);
     }
-    this.self.removeEventListener('scroll', this, true);
+    // other browsers
+    else {
+      for (var i=0; i<animStart.length; i++) {
+        this.self.removeEventListener(animStart[i], this);
+      }
+      this.self.removeEventListener('scroll', this, true);
+    }
   }
 
   // if there's no 'onResize' prop, then we'll fall back
@@ -122,7 +138,7 @@ export default class ResizeSensor extends React.Component {
   onResize() { }
 
   setOnResize(props) {
-    if('onResize' in props) {
+    if ('onResize' in props) {
       this.onResize = props.onResize;
     }
   }
@@ -131,7 +147,7 @@ export default class ResizeSensor extends React.Component {
   // so that we don't have to deal with binding
   handleEvent(e) {
     // on scroll, debounce-ish
-    if(e.type === 'scroll') {
+    if (e.type === 'scroll') {
       this.resetTriggers();
       if (this.resizeRAF) {
         window.cancelAnimationFrame(

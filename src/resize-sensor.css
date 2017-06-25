@@ -56,6 +56,14 @@
 /* This is needed to trigger resizing
    once the element becomes visible */
 .resize-sensor-react {
+  -webkit-animation-name: resize-sensor-react-animation;
+  -moz-animation-name: resize-sensor-react-animation;
+  -o-animation-name: resize-sensor-react-animation;
+  -ms-animation-name: resize-sensor-react-animation;
   animation-name: resize-sensor-react-animation;
+  -webkit-animation-duration: 1ms;
+  -moz-animation-duration: 1ms;
+  -o-animation-duration: 1ms;
+  -ms-animation-duration: 1ms;
   animation-duration: 1ms;
 }

@@ -20,10 +20,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var style = '.resize-sensor-react,.resize-sensor-react > div,.resize-sensor-react .resize-sensor-react__contract-child{display:block;position:absolute;top:0px;left:0px;height:100%;width:100%;opacity:0;overflow:hidden;pointer-events:none;z-index:-1;}.resize-sensor-react{background:#eee;overflow:auto;direction:ltr;}.resize-sensor-react .resize-sensor-react__contract-child{width:200%;height:200%;}@keyframes resize-sensor-react-animation{from{opacity:0;}to{opacity:0;}}@-webkit-keyframes resize-sensor-react-animation{from{opacity:0;}to{opacity:0;}}@-moz-keyframes resize-sensor-react-animation{from{opacity:0;}to{opacity:0;}}@-o-keyframes resize-sensor-react-animation{from{opacity:0;}to{opacity:0;}}.resize-sensor-react{animation-name:resize-sensor-react-animation;animation-duration:1ms;}';
+var style = '.resize-sensor-react,.resize-sensor-react > div,.resize-sensor-react .resize-sensor-react__contract-child{display:block;position:absolute;top:0px;left:0px;height:100%;width:100%;opacity:0;overflow:hidden;pointer-events:none;z-index:-1;}.resize-sensor-react{background:#eee;overflow:auto;direction:ltr;}.resize-sensor-react .resize-sensor-react__contract-child{width:200%;height:200%;}@keyframes resize-sensor-react-animation{from{opacity:0;}to{opacity:0;}}@-webkit-keyframes resize-sensor-react-animation{from{opacity:0;}to{opacity:0;}}@-moz-keyframes resize-sensor-react-animation{from{opacity:0;}to{opacity:0;}}@-o-keyframes resize-sensor-react-animation{from{opacity:0;}to{opacity:0;}}.resize-sensor-react{-webkit-animation-name:resize-sensor-react-animation;-moz-animation-name:resize-sensor-react-animation;-o-animation-name:resize-sensor-react-animation;-ms-animation-name:resize-sensor-react-animation;animation-name:resize-sensor-react-animation;-webkit-animation-duration:1ms;-moz-animation-duration:1ms;-o-animation-duration:1ms;-ms-animation-duration:1ms;animation-duration:1ms;}';
 
 
 var
+// this is for ie9
+supportsAttachEvent = 'attachEvent' in document,
+
 // needed so that we just insert <style> once
 styleInitialized = false,
 
@@ -151,12 +154,19 @@ var ResizeSensor = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.setOnResize(this.props);
-      this.self.addEventListener('scroll', this, true);
-      for (var i = 0; i < animStart.length; i++) {
-        this.self.addEventListener(animStart[i], this);
+      // ie9 only
+      if (supportsAttachEvent) {
+        this.self.attachEvent('onresize', this.onElementResize);
       }
-      // Initial value reset of all triggers
-      this.resetTriggers();
+      // other browsers
+      else {
+          this.self.addEventListener('scroll', this, true);
+          for (var i = 0; i < animStart.length; i++) {
+            this.self.addEventListener(animStart[i], this);
+          }
+          // Initial value reset of all triggers
+          this.resetTriggers();
+        }
     }
 
     // When element is unmounted, need to remove all
@@ -164,10 +174,17 @@ var ResizeSensor = function (_React$Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      for (var i = 0; i < animStart.length; i++) {
-        this.self.removeEventListener(animStart[i], this);
+      // ie9 only
+      if (supportsAttachEvent) {
+        this.self.detachEvent('onresize', this.onElementResize);
       }
-      this.self.removeEventListener('scroll', this, true);
+      // other browsers
+      else {
+          for (var i = 0; i < animStart.length; i++) {
+            this.self.removeEventListener(animStart[i], this);
+          }
+          this.self.removeEventListener('scroll', this, true);
+        }
     }
 
     // if there's no 'onResize' prop, then we'll fall back
