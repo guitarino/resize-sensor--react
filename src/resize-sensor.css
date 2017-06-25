@@ -15,7 +15,7 @@
 .resize-sensor-react {
   background: #eee;
   overflow: auto;
-  direction: ltr;
+  direction: ltr; /* otherwise not working when direction: rtl - bug in chrome */
 }
 .resize-sensor-react .resize-sensor-react__contract-child {
   width: 200%;

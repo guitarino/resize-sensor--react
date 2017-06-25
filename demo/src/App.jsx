@@ -41,7 +41,7 @@ export default class App extends React.Component {
             example2_shown: !shown,
             example2: this.state.example2
           });
-        }}>Show another example</button>
+        }}>Toggle another example</button>
 
         { this.state.example2_shown ?
           <div className='App__example-2 App__example'>

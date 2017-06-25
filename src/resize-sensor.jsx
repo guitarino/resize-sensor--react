@@ -1,14 +1,20 @@
 import React from 'react';
 import style from './resize-sensor.css';
+import './raf';
 
 var
+  // needed so that we just insert <style> once
   styleInitialized = false,
+  // animation start events with varied prefixes
   animStart = [
     'webkitAnimationStart',
     'animationstart',
     'oAnimationStart',
     'MSAnimationStart'
   ],
+  // the easiest way is to just insert a style
+  // into <style> tag so that all resize sensors
+  // share the same style
   insertCSS = function(css) {
     var where = (
       document.head ||
@@ -22,18 +28,37 @@ var
   }
 ;
 
+// essentially, this is the idea:
+//
+//   we have contraction and expansion triggers,
+//   each of them have children
+//
+//   for contraction:
+//     the child is 2x bigger than container,
+//     and it's always scrolled to the bottom right,
+//     so, when contracted, the bottom right scroll
+//     position changes, and the 'scroll' event gets called
+//
+//   for expansion:
+//     the child is slightly bigger than container,
+//     and it's always scrolled to the bottom right,
+//     so, when the container expands, the scrollbar
+//     disappears and changes the child's scroll position
+//
 export default class ResizeSensor extends React.Component {
   constructor() {
     super();
-    // initial values
+    // when invisible, <ResizeSensor/> size is 0x0
     this.dimensions = {
       width: 0,
       height: 0
     };
-    // binding for requestAnimationFrame callback
+    // binding (needed for requestAnimationFrame callback)
     this.onElementResize = this.onElementResize.bind(this);
   }
 
+  // as you can see, there's triggers that "listen" to expansion
+  // and triggers that "listen" to contraction
   render() {
     return (
       <div className='resize-sensor-react' ref={(e) => {this.self = e}}>
@@ -47,7 +72,8 @@ export default class ResizeSensor extends React.Component {
     );
   }
 
-  // insert style into DOM initially
+  // initially, when no element is mounted yet,
+  // insert style into DOM
   componentWillMount() {
     if(!styleInitialized) {
       styleInitialized = true;
@@ -55,16 +81,24 @@ export default class ResizeSensor extends React.Component {
     }
   }
 
-  // never update element, just render initially
+  // never update element, just render once
   shouldComponentUpdate() {
     return false;
   }
   
-  // overriding onResize once props are received
+  // overriding onResize if props are updated
   componentWillReceiveProps(props) {
     this.setOnResize(props);
   }
 
+  // when component is mounted, we just need to attach handlers
+  // scroll - needed for detecting resize
+  // animation start - needed detecting visibility (we need to
+  //   trigger initial update once the element becomes visible
+  //   because the size might have changed)
+  //
+  // Note: using addEventListener's ability to trigger `handleEvent`
+  //       so that we don't have to deal with binding
   componentDidMount() {
     this.setOnResize(this.props);
     this.self.addEventListener('scroll', this, true);
@@ -75,6 +109,7 @@ export default class ResizeSensor extends React.Component {
     this.resetTriggers();
   }
 
+  // When element is unmounted, need to remove all
   componentWillUnmount() {
     for(var i=0; i<animStart.length; i++) {
       this.self.removeEventListener(animStart[i], this);
@@ -82,7 +117,8 @@ export default class ResizeSensor extends React.Component {
     this.self.removeEventListener('scroll', this, true);
   }
 
-  // do nothing by default
+  // if there's no 'onResize' prop, then we'll fall back
+  // to this onResize, which will do nothing
   onResize() { }
 
   setOnResize(props) {
@@ -91,8 +127,10 @@ export default class ResizeSensor extends React.Component {
     }
   }
 
+  // using addEventListener's handleEvent ability
+  // so that we don't have to deal with binding
   handleEvent(e) {
-    // on scroll
+    // on scroll, debounce-ish
     if(e.type === 'scroll') {
       this.resetTriggers();
       if (this.resizeRAF) {
@@ -104,7 +142,8 @@ export default class ResizeSensor extends React.Component {
         this.onElementResize
       );
     }
-    // on animation start event
+    // when element becomes visible, reset the trigger sizes;
+    // the scroll will be triggered if sizes changed
     else {
       if (e.animationName === 'resize-sensor-react-animation') {
         this.resetTriggers();
@@ -112,15 +151,17 @@ export default class ResizeSensor extends React.Component {
     }
   }
 
+  // check if actually resized, call the callback
   onElementResize() {
     var currentDimensions = this.getDimensions();
     if (this.isResized(currentDimensions)) {
       this.dimensions.width = currentDimensions.width;
       this.dimensions.height = currentDimensions.height;
-      this.onResize(currentDimensions.width, currentDimensions.height);
+      this.onResize(this.dimensions.width, this.dimensions.height);
     }
   }
 
+  // just checking if either dimension changed
   isResized(currentDimensions) {
     return (
       currentDimensions.width !== this.dimensions.width ||
@@ -128,6 +169,7 @@ export default class ResizeSensor extends React.Component {
     );
   }
 
+  // returning current dimensions of the resize sensor
   getDimensions() {
     return {
       width: this.self.offsetWidth,
@@ -135,6 +177,7 @@ export default class ResizeSensor extends React.Component {
     };
   }
 
+  // this implements the idea behind resize sensor
   resetTriggers() {
     this.contract.scrollLeft = this.contract.scrollWidth;
     this.contract.scrollTop = this.contract.scrollHeight;

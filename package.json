@@ -7,7 +7,7 @@
     "install-global-deps": "npm install -g http-server && npm install -g webpack",
     "demo-server": "http-server ./demo/ -c 0",
     "demo-webpack": "webpack",
-    "build": "./node_modules/.bin/babel.cmd ./src/resize-sensor.jsx --out-file ./build/resize-sensor.js"
+    "build": "./node_modules/.bin/babel.cmd ./src --out-dir ./build"
   },
   "keywords": [
     "resize",
