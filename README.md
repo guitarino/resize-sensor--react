@@ -37,6 +37,25 @@ class App extends React.Component {
 
 Note: the container should either have `position: relative` or `position: absolute` defined on it.
 
+## See Demo
+
+To see a little demo, do the following
+
+```
+git clone https://github.com/guitarino/resize-sensor--react.git .
+npm install
+npm run install-global-deps
+npm run demo-webpack
+```
+
+In another terminal / cmd
+
+```
+npm run demo-server
+```
+
+This will tell you the URL address where you'll see a little demo. By changing the browser window size, you can confirm that size change gets reported. By clicking the `Toggle another example` button, you can also confirm that element size gets updated even if the size changed while the element was not visible. You can also play around with the code under `demo/src` and it should automatically re-bundle.
+
 ## Support
 
 IE9+, Edge, Safari, Chrome, Firefox
