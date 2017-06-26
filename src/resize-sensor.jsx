@@ -1,9 +1,10 @@
-/*!
-Copyright (c) 2017 Kirill Shestakov
-MIT License
----
-Rework of https://github.com/procurios/ResizeSensor
-*/
+/**
+ * @license MIT
+ * @copyright Kirill Shestakov 2017
+ * @see https://github.com/guitarino/resize-sensor--react/
+ * ----
+ * Rework of https://github.com/procurios/ResizeSensor
+ */
 
 import React from 'react';
 import style from './resize-sensor.css';
