@@ -5,7 +5,7 @@ A React component based on work by [procurios](https://github.com/procurios/Resi
 ## How to install it
 
 ```
-npm install --save https://github.com/guitarino/resize-sensor--react
+npm install --save resize-sensor--react
 ```
 
 ## How to use it
