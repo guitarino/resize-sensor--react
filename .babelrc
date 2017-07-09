@@ -1,4 +1,4 @@
 {
-  "presets": ["es2015", "react"],
-  "plugins": ["transform-css-import-to-string"]
+  "presets": ["es2015"],
+  "plugins": ["transform-react-jsx"]
 }
