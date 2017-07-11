@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ResizeSensor from '../../build/resize-sensor';
 
+import '../../build/resize-sensor.css';
 import './App.css';
 
 export default class App extends React.Component {
